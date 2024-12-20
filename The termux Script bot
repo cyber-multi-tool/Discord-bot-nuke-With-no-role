@@ -1,0 +1,28 @@
+import discord
+import asyncio
+
+intents = discord.Intents.default()
+intents.messages = True
+
+# Create a client instance
+client = discord.Client(intents=intents)
+
+@client.event
+async def on_ready():
+    print(f'Bro, I\'m logged in as {client.user}')
+    
+    # Send a message every 5 seconds to all text channels in all guilds (servers)
+    while True:
+        for guild in client.guilds:
+            for channel in guild.text_channels:
+                try:
+                    # Send message to the channel
+                    await channel.send('Bro, come on! This is a test message every 5 seconds!')
+                    print(f'Bro, message sent in {channel.name} of {guild.name}')
+                except discord.errors.Forbidden:
+                    # If the bot doesn't have permission to send messages, skip the channel
+                    print(f'No permission to send message in {channel.name} of {guild.name}')
+        await asyncio.sleep(5)  # Wait for 5 seconds before sending the next message
+
+# Run the bot with the token
+client.run('YOUR_BOT_TOKEN_HERE')
